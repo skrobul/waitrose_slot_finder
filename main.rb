@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 $stdout.sync = true
 require_relative 'checker'
-require_relative 'notifier'
+require_relative 'notifiers/gotify'
 
 @checker = SlotChecker.new(
   username: ENV['TROSE_USER'],
@@ -9,6 +9,8 @@ require_relative 'notifier'
 ).accept_cookies
 
 @logger = Logger.new($stdout)
+
+@notifier = GotifyNotifier.new
 
 def single_check
   begin
@@ -19,14 +21,9 @@ def single_check
     @logger.error e
   end
 
-
   return unless slots_available
 
-  Notifier.new.message(
-    title: 'Waitrose slot checker',
-    message: 'Chyba są nowe sloty!',
-    priority: 5
-  )
+  @notifier.notify_slots_available
 end
 
 def sleep_time
