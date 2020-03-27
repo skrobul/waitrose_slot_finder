@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+$stdout.sync = true
 require 'dotenv/load'
 require 'capybara'
 require 'date'
@@ -20,8 +21,9 @@ Capybara.register_driver :headless_chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
-# Capybara.default_driver = Capybara.javascript_driver = :selenium_chrome_headless
+# uncomment for debug
 # Capybara.default_driver = Capybara.javascript_driver = :selenium_chrome
+
 Capybara.default_driver = Capybara.javascript_driver = :headless_chrome
 
 class SlotChecker
@@ -32,13 +34,21 @@ class SlotChecker
     @username = username
     @password = password
     @logger = Logger.new($stdout)
+    @cookies_accepted = false
   end
 
-  def login
-    logger.info 'Logging in'
+  def accept_cookies
+    return if @cookies_accepted
+
     visit 'https://www.waitrose.com/ecom/shop/browse/groceries'
     logger.info 'Accepting cookies'
     click_on 'Yes, allow all'
+    self
+  end
+
+  def login
+    visit 'https://www.waitrose.com/ecom/shop/browse/groceries'
+    logger.info 'Logging in'
     logger.info 'clicking book slot'
     click_on 'Book slot'
     logger.info 'clicking book a delivery slot'
@@ -59,6 +69,8 @@ class SlotChecker
   def logout
     logger.info 'Logging out'
     click_on 'Sign out'
+  rescue
+    require 'pry'; binding.pry
   end
 
   private
