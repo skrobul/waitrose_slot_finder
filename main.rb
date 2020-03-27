@@ -2,6 +2,7 @@
 $stdout.sync = true
 require_relative 'checker'
 require_relative 'notifiers/gotify'
+require_relative 'notifiers/pushover'
 
 @checker = SlotChecker.new(
   username: ENV['TROSE_USER'],
@@ -10,7 +11,10 @@ require_relative 'notifiers/gotify'
 
 @logger = Logger.new($stdout)
 
-@notifier = GotifyNotifier.new
+@notifier = case ENV['NOTIFIER']
+            when 'pushover' then PushoverNotifier.new
+            else GotifyNotifier.new
+            end
 
 def single_check
   begin
