@@ -32,9 +32,8 @@ class SlotChecker
     @logger = Logger.new($stdout)
   end
 
-
   def login
-    logger.info "Logging in"
+    logger.info 'Logging in'
     visit 'https://www.waitrose.com/ecom/shop/browse/groceries'
     logger.info 'Accepting cookies'
     click_on 'Yes, allow all'
@@ -46,8 +45,6 @@ class SlotChecker
     find('#password').fill_in with: password
     click_on 'Sign in'
     self
-  # rescue
-  #   require 'pry'; binding.pry
   end
 
   def slots_available?
@@ -55,12 +52,10 @@ class SlotChecker
     result = has_no_css?('h1', text: /all slots are unavailable/i, wait: 1)
     logger.info "Slots available: #{result}"
     result
-  # rescue
-  #   require 'pry'; binding.pry
   end
 
   def logout
-    logger.info "Logging out"
+    logger.info 'Logging out'
     click_on 'Sign out'
   end
 
