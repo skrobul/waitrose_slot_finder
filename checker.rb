@@ -61,7 +61,8 @@ class SlotChecker
 
   def slots_available?
     has_text?('Sign out', wait: 5)
-    result = has_no_css?('h1', text: /all slots are unavailable/i, wait: 1)
+    result = has_no_css?('h1', text: /all slots are unavailable/i, wait: 1) &&
+             has_no_css?('h1', text: /We're supporting the vulnerable and elderly/i, wait: 1)
     logger.info "Slots available: #{result}"
     result
   end
@@ -82,7 +83,9 @@ if $PROGRAM_NAME == __FILE__
   checker = SlotChecker.new(
     username: ENV['TROSE_USER'],
     password: ENV['TROSE_PASSWORD']
-  ).login
+  )
+  checker.accept_cookies
+  checker.login
 
   begin
     checker.slots_available?
