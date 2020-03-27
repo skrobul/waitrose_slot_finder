@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 $stdout.sync = true
 require_relative 'checker'
+require_relative 'notifiers/dampener'
 require_relative 'notifiers/gotify'
 require_relative 'notifiers/pushover'
 
@@ -11,10 +12,19 @@ require_relative 'notifiers/pushover'
 
 @logger = Logger.new($stdout)
 
-@notifier = case ENV['NOTIFIER']
-            when 'pushover' then PushoverNotifier.new
-            else GotifyNotifier.new
-            end
+def setup_notifier
+  instance = case ENV['NOTIFIER']
+         when 'pushover' then PushoverNotifier.new
+         else GotifyNotifier.new
+         end
+  if ENV['NO_DAMPENING']
+    instance
+  else
+    Dampener.new(instance)
+  end
+end
+
+@notifier = setup_notifier
 
 def single_check
   begin
