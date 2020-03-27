@@ -1,7 +1,7 @@
 require 'httparty'
 require 'dotenv/load'
 
-class Notifier
+class GotifyNotifier
   include HTTParty
   base_uri ENV.fetch('GOTIFY_URL')
   headers 'X-Gotify-Key' => ENV.fetch('GOTIFY_APP_TOKEN')
