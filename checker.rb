@@ -22,9 +22,11 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 # uncomment for debug
-Capybara.default_driver = Capybara.javascript_driver = :selenium_chrome
-
-# Capybara.default_driver = Capybara.javascript_driver = :headless_chrome
+if ENV['NO_HEADLESS']
+  Capybara.default_driver = Capybara.javascript_driver = :selenium_chrome
+else 
+  Capybara.default_driver = Capybara.javascript_driver = :headless_chrome
+end
 class NoMoreSlots < Capybara::ElementNotFound; end
 class SlotChecker
   include Capybara::DSL
