@@ -77,18 +77,18 @@ class SlotChecker
 
   def parse_grid
     loop do
-      # logger.debug "Parsing slot grid"
       if all_slots_taken?
-        logger.info "No slots on #{slot_name}"
+        logger.info "No slots on week starting #{slot_name}"
         next_grid
       else
         logger.info "SLOTS AVAILABLE on #{slot_name}"
         return true
       end
     end
-  rescue NoMoreSlots, Capybara::ElementNotFound => err
+  rescue NoMoreSlots
+    logger.info 'No more slot grids'
+  rescue Capybara::ElementNotFound => err
     logger.error err.inspect
-    logger.info "No more slot pages"
   end
 
   def slot_name
