@@ -61,9 +61,9 @@ class SlotChecker
 
   def slots_available?
     has_text?('Sign out', wait: 5)
-    result = has_no_css?('h1', text: /all slots are unavailable/i, wait: 1) &&
-             has_no_css?('h1', text: /We're supporting the vulnerable and elderly/i, wait: 1) &&
-             has_no_css?('h1', text: /slots are unavailable/i, wait: 1)
+    result = has_no_css?('h1', text: /all slots are unavailable/i, wait: 3) &&
+             has_no_css?('h1', text: /We're supporting the vulnerable and elderly/i, wait: 3) &&
+             has_no_css?('h1', text: /slots are unavailable/i, wait: 3)
     logger.info "Slots available: #{result}"
     if result
       page.save_screenshot('/tmp/slots.png')
