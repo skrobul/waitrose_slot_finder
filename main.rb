@@ -29,15 +29,16 @@ end
 def single_check
   begin
     @checker.login
-    slots_available = @checker.slots_available?
+    available_slot_name = @checker.slots_available?
     @checker.logout
   rescue Capybara::ElementNotFound => e
     @logger.error e
   end
 
-  return unless slots_available
+  return unless available_slot_name
 
-  @notifier.notify_slots_available
+  @logger.info "Sending notification for #{available_slot_name}."
+  @notifier.notify_slots_available(available_slot_name)
 end
 
 def sleep_time

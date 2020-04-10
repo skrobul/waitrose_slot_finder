@@ -7,10 +7,10 @@ class PushoverNotifier
     )
   end
 
-  def notify_slots_available
+  def notify_slots_available(name)
     client.notify(
       user_key,
-      'Delivery slots available!',
+      "Delivery slot available: #{name}!",
       priority: 1,
       title: 'Waitrose slot checker'
     )

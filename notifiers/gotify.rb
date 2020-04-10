@@ -6,10 +6,10 @@ class GotifyNotifier
   base_uri ENV.fetch('GOTIFY_URL')
   headers 'X-Gotify-Key' => ENV.fetch('GOTIFY_APP_TOKEN')
 
-  def notify_slots_available
+  def notify_slots_available(name)
     message(
       title: 'Waitrose slot checker',
-      message: 'There are new slots available!',
+      message: "There are new slots available: #{name}!",
       priority: 5
     )
   end

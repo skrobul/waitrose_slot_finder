@@ -68,7 +68,7 @@ class SlotChecker
              has_no_css?('h1', text: /slots are unavailable/i, wait: 0)
              logger.info "Slots may be available: #{result}"
     if result
-      page.save_screenshot('/tmp/slots.png')
+      page.save_screenshot('/tmp/slots.png', full: true)
       parse_grid
     else
       false
@@ -81,14 +81,17 @@ class SlotChecker
         logger.info "No slots on week starting #{slot_name}"
         next_grid
       else
-        logger.info "SLOTS AVAILABLE on #{slot_name}"
-        return true
+        name = slot_name
+        logger.info "SLOTS AVAILABLE on #{name}"
+        return slot_name
       end
     end
   rescue NoMoreSlots
     logger.info 'No more slot grids'
+    false
   rescue Capybara::ElementNotFound => err
     logger.error err.inspect
+    false
   end
 
   def slot_name
@@ -104,7 +107,11 @@ class SlotChecker
 
   def all_slots_taken?
     slot_grid = find('div[data-test=slot-grid]', wait: 5)
-    slot_grid.find_all('button>span', text: 'Unavailable').size == 85
+    has_text?('Thu', wait: 10)
+    unavailable_slots = slot_grid.find_all('button[data-test=unavailable-slot]', wait: 2).size
+    fully_booked_slots = slot_grid.find_all('button[data-test=fully-booked-slot]').size
+    # logger.debug "There are #{unavailable_slots} unavailable slots"
+    (unavailable_slots + fully_booked_slots) == 75
   end
 
   def logout
