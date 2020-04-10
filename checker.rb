@@ -24,7 +24,7 @@ end
 # uncomment for debug
 if ENV['NO_HEADLESS']
   Capybara.default_driver = Capybara.javascript_driver = :selenium_chrome
-else 
+else
   Capybara.default_driver = Capybara.javascript_driver = :headless_chrome
 end
 class NoMoreSlots < Capybara::ElementNotFound; end
@@ -110,8 +110,10 @@ class SlotChecker
     has_text?('Thu', wait: 10)
     unavailable_slots = slot_grid.find_all('button[data-test=unavailable-slot]', wait: 2).size
     fully_booked_slots = slot_grid.find_all('button[data-test=fully-booked-slot]').size
-    # logger.debug "There are #{unavailable_slots} unavailable slots"
-    (unavailable_slots + fully_booked_slots) == 75
+    logger.debug "There are #{unavailable_slots} unavailable slots and #{fully_booked_slots} fully booked"
+    all_taken = slot_grid.find_all('td > button').none? { |b| !['unavailable-slot', 'fully-booked-slot'].include? b['data-test'] }
+    logger.debug "All slots taken?: #{all_taken}"
+    all_taken
   end
 
   def logout
