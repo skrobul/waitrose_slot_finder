@@ -76,9 +76,13 @@ class SlotChecker
   end
 
   def parse_grid
+    weeks = 0
     loop do
       if all_slots_taken?
         logger.info "No slots on week starting #{slot_name}"
+        break if weeks > 4
+
+        weeks += 1
         next_grid
       else
         name = slot_name
@@ -112,7 +116,7 @@ class SlotChecker
     fully_booked_slots = slot_grid.find_all('button[data-test=fully-booked-slot]').size
     logger.debug "There are #{unavailable_slots} unavailable slots and #{fully_booked_slots} fully booked"
     all_taken = slot_grid.find_all('td > button').none? { |b| !['unavailable-slot', 'fully-booked-slot'].include? b['data-test'] }
-    logger.debug "All slots taken?: #{all_taken}"
+    # logger.debug "All slots taken?: #{all_taken}"
     all_taken
   end
 
